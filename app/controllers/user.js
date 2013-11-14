@@ -2,10 +2,12 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose')
-  , express = require('express')
   , User = mongoose.model('User')
+  , postParser = require('../../lib/middleware/post-parser')
 
-module.exports = function (app, passport) {
+module.exports = function (app, logger) {
+  logger.info('Setting up user routes')
+
   app.get('/sign-in', function (req, res) {
     res.render('users/sign-in', {
       title: 'Signin',
@@ -21,7 +23,7 @@ module.exports = function (app, passport) {
   })
 
   //Setting up the users api
-  app.post('/users', express.bodyParser(), function (req, res, next) {
+  app.post('/users', postParser(), function (req, res, next) {
     var user = new User(req.body)
 
     user.provider = 'local'

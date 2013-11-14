@@ -8,7 +8,7 @@ var express = require('express')
 
   , helpers = require('./lib/middleware/helpers')
 
-module.exports = function(app, passport, db) {
+module.exports = function(app, logger, passport, db) {
   app.set('showStackError', true)
 
   if (properties.env === 'development') {

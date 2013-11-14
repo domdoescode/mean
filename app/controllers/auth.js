@@ -2,11 +2,12 @@
  * Module dependencies.
  */
 var properties = require('../../properties')()
-  , express = require('express')
+  , postParser = require('../../lib/middleware/post-parser')
 
-module.exports = function (app, passport) {
+module.exports = function (app, logger, passport) {
+  logger.info('Setting up auth routes')
 
-  app.post('/auth/log-in', express.bodyParser(), passport.authenticate('local', {
+  app.post('/auth/log-in', postParser(), passport.authenticate('local', {
     failureRedirect: '/sign-in',
     failureFlash: 'Invalid email or password.'
   }), function (req, res) {
@@ -32,7 +33,7 @@ module.exports = function (app, passport) {
 
     app.get('/auth/facebook/callback', passport.authenticate('facebook', {
       failureRedirect: '/sign-in'
-    }), function (req, res, next) {
+    }), function (req, res) {
       res.redirect('/')
     })
   }
@@ -50,7 +51,7 @@ module.exports = function (app, passport) {
 
     app.get('/auth/github/callback', passport.authenticate('github', {
       failureRedirect: '/sign-in'
-    }), function (req, res, next) {
+    }), function (req, res) {
       res.redirect('/')
     })
   }
@@ -68,7 +69,7 @@ module.exports = function (app, passport) {
 
     app.get('/auth/twitter/callback', passport.authenticate('twitter', {
       failureRedirect: '/sign-in'
-    }), function (req, res, next) {
+    }), function (req, res) {
       res.redirect('/')
     })
   }
@@ -81,13 +82,13 @@ module.exports = function (app, passport) {
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email'
       ]
-    }), function (req, res, next) {
+    }), function (req, res) {
       res.redirect('/')
     })
 
     app.get('/auth/google/callback', passport.authenticate('google', {
       failureRedirect: '/sign-in'
-    }), function (req, res, next) {
+    }), function (req, res) {
       res.redirect('/')
     })
   }

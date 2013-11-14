@@ -4,8 +4,11 @@
 var express = require('express')
   , fs = require('fs')
   , passport = require('passport')
-  , logger = require('bunyan')
+  , bunyan = require('bunyan')
   , _ = require('lodash')
+
+// Configure logger
+  , logger = bunyan.createLogger({ name: 'MEAN Stack' })
 
 // Load configurations
   , properties = require('./properties')()
@@ -27,7 +30,7 @@ var express = require('express')
 
       if (stat.isFile()) {
         if (/(.*)\.(js$)/.test(file)) {
-          require(newPath)
+          require(newPath)(logger)
         }
       } else if (stat.isDirectory()) {
         walk(newPath)
@@ -38,21 +41,23 @@ var express = require('express')
 walk(modelsPath)
 
 // Bootstrap passport config
-require('./lib/passport')(passport)
+require('./lib/passport')(passport, logger)
 
 var app = express()
 
 // Express settings
-require('./app')(app, passport, db)
+require('./app')(app, logger, passport, db)
 
 // Bootstrap routes
-require(__dirname + '/app/controllers/auth')(app, passport)
-require(__dirname + '/app/controllers/home')(app)
-require(__dirname + '/app/controllers/user')(app)
+require(__dirname + '/app/controllers/auth')(app, logger, passport)
+require(__dirname + '/app/controllers/home')(app, logger)
+require(__dirname + '/app/controllers/user')(app, logger)
 
 // Start the app by listening on <port>
 app.listen(properties.port)
-console.log('Express app started on port ' + properties.port)
+
+logger.info('Express app started on port', properties.port)
+logger.info('App is in', properties.environment, 'environment')
 
 // Expose app
 exports = module.exports = app
