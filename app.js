@@ -2,8 +2,11 @@
  * Module dependencies.
  */
 var express = require('express')
+  , flash = require('connect-flash')
   , MongoStore = require('connect-mongo')(express)
   , properties = require('./properties')()
+
+  , helpers = require('./lib/middleware/helpers')
 
 module.exports = function(app, passport, db) {
   app.set('showStackError', true)
@@ -51,6 +54,10 @@ module.exports = function(app, passport, db) {
         collection: 'sessions'
       })
     }))
+
+    app.use(flash())
+
+    app.use(helpers)
 
     // use passport session
     app.use(passport.initialize())

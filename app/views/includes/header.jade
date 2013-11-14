@@ -1,8 +1,13 @@
 .header-container
-  ul
-    li
-      a(href='#') There
-    li
-      a(href='#') Here
-    li
-      a(href='#') Elsewhere
+  if (req.user)
+    ul
+      li
+        a(href='/sign-out') Sign Out
+
+    p Hello #{req.user.username}
+  else
+    ul
+      li
+        a(href='/sign-in') Sign In
+      li
+        a(href='/sign-up') Register
