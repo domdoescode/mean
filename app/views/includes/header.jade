@@ -2,7 +2,7 @@
   if (req.user)
     ul
       li
-        a(href='/sign-out') Sign Out
+        a(href='/auth/log-out') Sign Out
 
     p Hello #{req.user.username}
   else

@@ -21,29 +21,13 @@ var express = require('express')
 
 // Bootstrap models
   , walk = function (path) {
-
-    // Remove first argument for passing to routes
-    var walkArgs = []
-    for (var i = 1; i < arguments.length; i++) {
-      walkArgs.push(arguments[i])
-    }
-
     fs.readdirSync(path).forEach(function (file) {
       var newPath = path + '/' + file
         , stat = fs.statSync(newPath)
 
       if (stat.isFile()) {
         if (/(.*)\.(js$)/.test(file)) {
-
-          // Models only take one argument
-          if (walkArgs.length === 0) {
-            require(newPath)
-
-          // Routes take more (but remove the path)
-          } else {
-            var route = require(newPath)
-            route.apply(this, walkArgs)
-          }
+          require(newPath)
         }
       } else if (stat.isDirectory()) {
         walk(newPath)
@@ -62,7 +46,9 @@ var app = express()
 require('./app')(app, passport, db)
 
 // Bootstrap routes
-walk(controllersPath, app, passport, auth)
+require(__dirname + '/app/controllers/auth')(app, passport)
+require(__dirname + '/app/controllers/home')(app)
+require(__dirname + '/app/controllers/user')(app)
 
 // Start the app by listening on <port>
 app.listen(properties.port)
