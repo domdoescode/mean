@@ -1,7 +1,6 @@
 var request = require('supertest')
-  , should = require('should')
   , express = require('express')
-  , postParser= require('../../lib/middleware/post-parser')
+  , postParser= require('../../../lib/middleware/post-parser')
 
 var app = express()
 
@@ -15,42 +14,43 @@ app.post('/files', postParser(), function (req, res) {
   res.end()
 })
 
+app.use(function (error, req, res, next) {
+  res.send(error)
+  res.end()
+})
+
 describe('post-parser middleware', function () {
 
   it('should default to {}', function (done) {
-    var r = request(app)
+    request(app)
       .post('/')
       .expect(200)
-      .end(function (error, res) {
-        should.deepEqual({}, res.body)
-        r.app.close()
-        done()
-      })
+      .expect({}, done)
   })
 
   it('should parse JSON', function (done) {
-    var r = request(app)
+    request(app)
       .post('/')
       .expect(200)
       .send({ user: 'Dom' })
-      .end(function (error, res) {
-        should.deepEqual({ user: 'Dom' }, res.body)
-        r.app.close()
-        done()
-      });
+      .expect({ user: 'Dom' }, done)
+  })
+
+  it('should fail gracefully with invalid JSON', function(done){
+    request(app)
+      .post('/')
+      .set('Content-Type', 'application/json')
+      .send('{"user"')
+      .expect({ body: '{"user"', status: 400 }, done)
   })
 
   it('should parse x-www-form-urlencoded', function(done){
-    var r = request(app)
+    request(app)
       .post('/')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send('user=Dom')
       .expect(200)
-      .end(function (error, res) {
-        should.deepEqual({ user: 'Dom' }, res.body)
-        r.app.close()
-        done();
-      });
+      .expect({ user: 'Dom' }, done)
   })
 
   describe('with multipart/form-data', function () {
@@ -63,26 +63,18 @@ describe('post-parser middleware', function () {
           , '\r\n--foo--'
           ].join()
 
-      var r = request(app)
+      request(app)
         .post('/')
         .set('Content-Type', 'multipart/form-data; boundary=foo')
         .send(content)
-        .end(function (error, res) {
-          should.deepEqual({}, res.body)
-          r.app.close()
-          done()
-        })
+        .expect({}, done)
     })
 
     it('should not support files', function (done) {
-      var r = request(app)
+      request(app)
         .post('/files')
         .attach('test', __dirname + '/post-parser.test.js')
-        .end(function (error, res) {
-          should.deepEqual({}, res.body)
-          r.app.close()
-          done()
-        })
+        .expect({}, done)
     })
   })
 })

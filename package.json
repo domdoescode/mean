@@ -14,10 +14,12 @@
   },
   "devDependencies": {
     "mocha": "~1.14.0",
-    "istanbul": "~0.1.44"
+    "istanbul": "~0.1.44",
+    "should": "~2.1.0",
+    "supertest": "~0.8.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec",
+    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- --recursive -R spec",
     "start": "node server.js | ./node_modules/.bin/bunyan"
   },
   "repository": {
