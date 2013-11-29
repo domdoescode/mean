@@ -1,10 +1,12 @@
 /**
  * Module dependencies.
  */
-var properties = require('../../properties')()
-  , postParser = require('../../lib/middleware/post-parser')
+var postParser = require('../../lib/middleware/post-parser')
 
-module.exports = function (app, logger, passport) {
+module.exports = function (app, options, passport) {
+  var logger = options.logger
+    , properties = options.properties
+
   logger.info('Setting up auth routes')
 
   app.post('/auth/log-in', postParser(), passport.authenticate('local', {

@@ -5,7 +5,9 @@ var mongoose = require('mongoose')
   , User = mongoose.model('User')
   , postParser = require('../../lib/middleware/post-parser')
 
-module.exports = function (app, logger) {
+module.exports = function (app, options) {
+  var logger = options.logger
+
   logger.info('Setting up user routes')
 
   app.get('/sign-in', function (req, res) {

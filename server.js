@@ -48,10 +48,15 @@ var app = express()
 // Express settings
 require('./app')(app, logger, passport, db)
 
+var options =
+    { logger: logger
+    , properties: properties
+    }
+
 // Bootstrap routes
-require(__dirname + '/app/controllers/auth')(app, logger, passport)
-require(__dirname + '/app/controllers/home')(app, logger)
-require(__dirname + '/app/controllers/user')(app, logger)
+require(__dirname + '/app/controllers/auth')(app, options, passport)
+require(__dirname + '/app/controllers/home')(app, options)
+require(__dirname + '/app/controllers/user')(app, options)
 
 // Start the app by listening on <port>
 app.listen(properties.port)
