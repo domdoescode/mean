@@ -1,0 +1,10 @@
+box: wercker/nodejs
+
+build:
+  steps:
+    - nave
+        node-version: 0.10.22
+
+    - npm-install
+
+    - npm-test
