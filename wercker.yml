@@ -1,5 +1,8 @@
 box: wercker/ubuntu12.04-nodejs0.10
 
+services:
+  - wercker/mongodb@0.0.6
+
 build:
   steps:
     - domudall/nave@0.0.4:
