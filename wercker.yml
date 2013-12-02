@@ -3,7 +3,7 @@ box: wercker/ubuntu12.04-nodejs0.10
 build:
   steps:
     - domudall/nave@0.0.4:
-        node-version: 0.10.22
+        node-version: 0.10.6
 
     - npm-install
 
