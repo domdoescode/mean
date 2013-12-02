@@ -28,10 +28,7 @@ module.exports = function(app, logger, passport, db) {
   app.use(express.favicon())
   app.use(express.static(properties.root + '/public'))
 
-  // Don't use logger for test env
-  if (process.env.NODE_ENV !== 'test') {
-    app.use(express.logger('dev'))
-  }
+  app.use(express.logger('dev'))
 
   // Set views path, template engine and default layout
   app.set('views', properties.root + '/app/views')
