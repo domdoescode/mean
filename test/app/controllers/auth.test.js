@@ -17,17 +17,14 @@ describe('Auth controller', function () {
     var dbName = Math.round(Math.random() * 1000000).toString(36)
     connection = mongoose.createConnection('mongodb://localhost/test' + dbName)
 
-    mongoose.models = {}
-    mongoose.modelSchemas = {}
-
     connection.once('open', function () {
-      require('../../../app/models/user')(logger)
+      require('../../../app/models/user')(logger, connection)
 
-      var User = mongoose.model('User')
+      var User = connection.model('User')
         , user = new User(userFixtures.validUser)
 
-      user.save(function (err) {
-        done('tar')
+      user.save(function (error) {
+        done(error)
       })
 
     })
@@ -76,139 +73,140 @@ describe('Auth controller', function () {
         .send({ email: 'dom@test.com', password: 'no' })
         .expect(302)
         .end(function (error, res) {
+          console.log(res)
           res.headers['location'].should.equal('/sign-in')
           done(error)
         })
     })
   })
 
-  // describe('Facebook auth - /auth/facebook', function () {
-  //   var url = '/auth/facebook'
+  describe('Facebook auth - /auth/facebook', function () {
+    var url = '/auth/facebook'
 
-  //   it('should 404 if Facebook is not defined in properties', function (done) {
+    it('should 404 if Facebook is not defined in properties', function (done) {
 
-  //     options.properties = { }
+      options.properties = { }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(404, done)
-  //   })
+      request(app)
+        .get(url)
+        .expect(404, done)
+    })
 
-  //   it('should 200 if Facebook is defined in properties', function (done) {
+    it('should 200 if Facebook is defined in properties', function (done) {
 
-  //     options.properties = { facebook: true }
+      options.properties = { facebook: true }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(200, done)
-  //   })
-  // })
+      request(app)
+        .get(url)
+        .expect(200, done)
+    })
+  })
 
-  // describe('Twitter auth - /auth/twitter', function () {
-  //   var url = '/auth/twitter'
+  describe('Twitter auth - /auth/twitter', function () {
+    var url = '/auth/twitter'
 
-  //   it('should 404 if Twitter is not defined in properties', function (done) {
+    it('should 404 if Twitter is not defined in properties', function (done) {
 
-  //     options.properties = { }
+      options.properties = { }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(404, done)
-  //   })
+      request(app)
+        .get(url)
+        .expect(404, done)
+    })
 
-  //   it('should 200 if Twitter is defined in properties', function (done) {
+    it('should 200 if Twitter is defined in properties', function (done) {
 
-  //     options.properties = { twitter: true }
+      options.properties = { twitter: true }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(200, done)
-  //   })
-  // })
+      request(app)
+        .get(url)
+        .expect(200, done)
+    })
+  })
 
-  // describe('Google auth - /auth/google', function () {
-  //   var url = '/auth/google'
+  describe('Google auth - /auth/google', function () {
+    var url = '/auth/google'
 
-  //   it('should 404 if Google is not defined in properties', function (done) {
+    it('should 404 if Google is not defined in properties', function (done) {
 
-  //     options.properties = { }
+      options.properties = { }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(404, done)
-  //   })
+      request(app)
+        .get(url)
+        .expect(404, done)
+    })
 
-  //   it('should 200 if Google is defined in properties', function (done) {
+    it('should 200 if Google is defined in properties', function (done) {
 
-  //     options.properties = { google: true }
+      options.properties = { google: true }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(200, done)
-  //   })
-  // })
+      request(app)
+        .get(url)
+        .expect(200, done)
+    })
+  })
 
-  // describe('Github auth - /auth/github', function () {
-  //   var url = '/auth/github'
+  describe('Github auth - /auth/github', function () {
+    var url = '/auth/github'
 
-  //   it('should 404 if Github is not defined in properties', function (done) {
+    it('should 404 if Github is not defined in properties', function (done) {
 
-  //     options.properties = { }
+      options.properties = { }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(404, done)
-  //   })
+      request(app)
+        .get(url)
+        .expect(404, done)
+    })
 
-  //   it('should 200 if Github is defined in properties', function (done) {
+    it('should 200 if Github is defined in properties', function (done) {
 
-  //     options.properties = { github: true }
+      options.properties = { github: true }
 
-  //     var app = express()
+      var app = express()
 
-  //     require('../../../lib/passport')(passport, options)
-  //     require('../../../app/controllers/auth')(app, options, passport)
+      require('../../../lib/passport')(passport, options)
+      require('../../../app/controllers/auth')(app, options, passport)
 
-  //     request(app)
-  //       .get(url)
-  //       .expect(200, done)
-  //   })
-  // })
+      request(app)
+        .get(url)
+        .expect(200, done)
+    })
+  })
 
   after(function (done) {
     connection.db.dropDatabase(function (error) {

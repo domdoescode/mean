@@ -5,7 +5,6 @@ var express = require('express')
   , fs = require('fs')
   , passport = require('passport')
   , bunyan = require('bunyan')
-  , _ = require('lodash')
 
 // Configure logger
   , logger = bunyan.createLogger({ name: 'MEAN Stack' })
@@ -17,7 +16,6 @@ var express = require('express')
 
 // Define paths
   , modelsPath = __dirname + '/app/models'
-  , controllersPath = __dirname + '/app/controllers'
 
 // Bootstrap db connection
   , db = mongoose.connect(properties.db)
@@ -30,7 +28,7 @@ var express = require('express')
 
       if (stat.isFile()) {
         if (/(.*)\.(js$)/.test(file)) {
-          require(newPath)(logger)
+          require(newPath)(logger, db)
         }
       } else if (stat.isDirectory()) {
         walk(newPath)
@@ -40,18 +38,18 @@ var express = require('express')
 
 walk(modelsPath)
 
+var options =
+    { logger: logger
+    , properties: properties
+    }
+
 // Bootstrap passport config
-require('./lib/passport')(passport, logger)
+require('./lib/passport')(passport, options)
 
 var app = express()
 
 // Express settings
 require('./app')(app, logger, passport, db)
-
-var options =
-    { logger: logger
-    , properties: properties
-    }
 
 // Bootstrap routes
 require(__dirname + '/app/controllers/auth')(app, options, passport)

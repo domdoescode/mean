@@ -4,10 +4,9 @@
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , crypto = require('crypto')
-  , _ = require('lodash')
   , authTypes = ['github', 'twitter', 'facebook', 'google']
 
-module.exports = function (logger) {
+module.exports = function (logger, connection) {
   logger.info('Setting up user model')
 
   /**
@@ -123,5 +122,5 @@ module.exports = function (logger) {
     }
   }
 
-  mongoose.model('User', UserSchema)
+  connection.model('User', UserSchema)
 }
