@@ -15,7 +15,9 @@ var request = require('supertest')
 describe('Auth controller', function () {
   before(function (done) {
     var dbName = Math.round(Math.random() * 1000000).toString(36)
-    connection = mongoose.createConnection('mongodb://localhost/test' + dbName)
+      , host = process.env.WERCKER_MONGODB_HOST || 'localhost'
+
+    connection = mongoose.createConnection('mongodb://' + host + '/test' + dbName)
 
     connection.once('open', function () {
       require('../../../app/models/user')(logger, connection)
