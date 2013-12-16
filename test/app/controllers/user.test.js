@@ -10,7 +10,9 @@ var app = express()
 describe('User controller', function () {
   before(function (done) {
     var dbName = Math.round(Math.random() * 1000000).toString(36)
-    connection = mongoose.createConnection('mongodb://localhost/test' + dbName)
+      , host = process.env.WERCKER_MONGODB_HOST || 'localhost'
+
+    connection = mongoose.createConnection('mongodb://' + host + '/test' + dbName)
 
     mongoose.models = {}
     mongoose.modelSchemas = {}
