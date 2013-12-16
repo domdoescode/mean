@@ -2,15 +2,36 @@
  * Module dependencies.
  */
 var postParser = require('../../lib/middleware/post-parser')
+  , _ = require('lodash')
 
 module.exports = function (app, options, passport) {
   var logger = options.logger
     , properties = options.properties
 
+    , authenticateOptions =
+      { generic:
+        { failureRedirect: '/log-in' }
+      , facebook:
+        { scope:
+          [ 'email'
+          , 'user_about_me'
+          ]
+        }
+      , google:
+        { scope:
+          [ 'https://www.googleapis.com/auth/userinfo.profile'
+          , 'https://www.googleapis.com/auth/userinfo.email'
+          ]
+        }
+      }
+
+  authenticateOptions.facebook = _.extend({}, authenticateOptions.generic, authenticateOptions.facebook)
+  authenticateOptions.google = _.extend({}, authenticateOptions.generic, authenticateOptions.google)
+
   logger.info('Setting up auth routes')
 
   app.post('/auth/log-in', postParser(), passport.authenticate('local', {
-    failureRedirect: '/sign-in',
+    failureRedirect: '/log-in',
     failureFlash: 'Invalid email or password.'
   }), function (req, res) {
     res.redirect('/')
@@ -22,75 +43,41 @@ module.exports = function (app, options, passport) {
   })
 
   if (properties.facebook) {
-    //Setting the facebook oauth routes
-    app.get('/auth/facebook', passport.authenticate('facebook', {
-      scope: ['email', 'user_about_me'],
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
-      res.render('users/sign-in', {
-        title: 'Signin',
-        message: req.flash('error')
-      })
-    })
+    var facebookAuthMiddleware = passport.authenticate('facebook', authenticateOptions.facebook)
 
-    app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
+    // Setting the facebook oauth routes
+    app.get('/auth/facebook', facebookAuthMiddleware)
+    app.get('/auth/facebook/callback', facebookAuthMiddleware, function (req, res) {
       res.redirect('/')
     })
   }
 
   if (properties.github) {
-    //Setting the github oauth routes
-    app.get('/auth/github', passport.authenticate('github', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
-      res.render('users/sign-in', {
-        title: 'Signin',
-        message: req.flash('error')
-      })
-    })
+    var githubAuthMiddleware = passport.authenticate('github', authenticateOptions.generic)
 
-    app.get('/auth/github/callback', passport.authenticate('github', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
+    // Setting the github oauth routes
+    app.get('/auth/github', githubAuthMiddleware)
+    app.get('/auth/github/callback', githubAuthMiddleware, function (req, res) {
       res.redirect('/')
     })
   }
 
   if (properties.twitter) {
-    //Setting the twitter oauth routes
-    app.get('/auth/twitter', passport.authenticate('twitter', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
-      res.render('users/sign-in', {
-        title: 'Signin',
-        message: req.flash('error')
-      })
-    })
+    var twitterAuthMiddleware = passport.authenticate('twitter', authenticateOptions.generic)
 
-    app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
+    // Setting the twitter oauth routes
+    app.get('/auth/twitter', twitterAuthMiddleware)
+    app.get('/auth/twitter/callback', twitterAuthMiddleware, function (req, res) {
       res.redirect('/')
     })
   }
 
   if (properties.google) {
-    //Setting the google oauth routes
-    app.get('/auth/google', passport.authenticate('google', {
-      failureRedirect: '/sign-in',
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-      ]
-    }), function (req, res) {
-      res.redirect('/')
-    })
+    var googleAuthMiddleware = passport.authenticate('google', authenticateOptions.google)
 
-    app.get('/auth/google/callback', passport.authenticate('google', {
-      failureRedirect: '/sign-in'
-    }), function (req, res) {
+    // Setting the google oauth routes
+    app.get('/auth/google', googleAuthMiddleware)
+    app.get('/auth/google/callback', googleAuthMiddleware, function (req, res) {
       res.redirect('/')
     })
   }

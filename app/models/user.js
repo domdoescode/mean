@@ -4,7 +4,12 @@
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , crypto = require('crypto')
-  , authTypes = ['github', 'twitter', 'facebook', 'google']
+  , authTypes =
+    [ 'github'
+    , 'twitter'
+    , 'facebook'
+    , 'google'
+    ]
 
 module.exports = function (logger, connection) {
   logger.info('Setting up user model')
@@ -12,21 +17,37 @@ module.exports = function (logger, connection) {
   /**
    * User Schema
    */
-  var UserSchema = new Schema({
-    name: String
-  , email: String
-  , username:
-    { type: String
-    , unique: true
+  var UserSchema = new Schema(
+    { name:
+      { type: String
+      }
+    , email:
+      { type: String
+      , default: null
+      }
+    , username:
+      { type: String
+      , unique: true
+      , default: null
+      }
+    , provider:
+      { type: String
+      , default: 'native'
+      }
+    , hashedPassword:
+      { type: String
+      , default: null
+      }
+    , salt:
+      { type: String
+      , default: null
+      }
+    , github: {}
+    , twitter: {}
+    , facebook: {}
+    , google: {}
     }
-  , provider: String
-  , hashedPassword: String
-  , salt: String
-  , facebook: {}
-  , twitter: {}
-  , github: {}
-  , google: {}
-  })
+  )
 
   /**
    * Virtuals
@@ -42,47 +63,43 @@ module.exports = function (logger, connection) {
   /**
    * Validations
    */
-  var validatePresenceOf = function (value) {
-    return value && value.length
-  }
 
-  // the below 4 validations only apply if you are signing up traditionally
-  UserSchema.path('name').validate(function (name) {
-    // if you are authenticating by any of the oauth strategies, don't validate
-    if (authTypes.indexOf(this.provider) !== -1) return true
-    return name.length
-  }, 'Name cannot be blank')
-
+  // Email validation
   UserSchema.path('email').validate(function (email) {
     // if you are authenticating by any of the oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) return true
-    return email.length
+    return email && email.length
   }, 'Email cannot be blank')
+
+  // Email must be unique, regardless of strategy
+  UserSchema.path('email').validate(function (email, callback) {
+    var User = connection.model('User')
+    User.findOne({ email: email }, function (error, user) {
+      if (user) return callback(false)
+      callback(true)
+    })
+  }, 'Email is already in use')
 
   UserSchema.path('username').validate(function (username) {
     // if you are authenticating by any of the oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) return true
-    return username.length
+    return username && username.length
   }, 'Username cannot be blank')
+
+  // Username must be unique, regardless of strategy
+  UserSchema.path('username').validate(function (username, callback) {
+    var User = connection.model('User')
+    User.findOne({ username: username }, function (error, user) {
+      if (user) return callback(false)
+      callback(true)
+    })
+  }, 'Username is already in use')
 
   UserSchema.path('hashedPassword').validate(function (hashedPassword) {
     // if you are authenticating by any of the oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1) return true
-    return hashedPassword.length
+    return hashedPassword && hashedPassword.length
   }, 'Password cannot be blank')
-
-
-  /**
-   * Pre-save hook
-   */
-  UserSchema.pre('save', function (next) {
-    if (!this.isNew) return next()
-
-    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
-      next(new Error('Invalid password'))
-    else
-      next()
-  })
 
   /**
    * Methods
