@@ -19,11 +19,8 @@ var express = require('express')
 // Once connected, set everything up
 connection.once('open', function connectionOpen() {
   // Bootstrap models
-  var models =
-      [ 'user'
-      ]
-
-  models.forEach(function (model) {
+; [ 'user'
+  ].forEach(function (model) {
     require(__dirname + '/app/models/' + model)(logger, connection)
   })
 
