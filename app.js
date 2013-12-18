@@ -8,7 +8,7 @@ var express = require('express')
 
   , helpers = require('./lib/middleware/helpers')
 
-module.exports = function(app, logger, passport, db) {
+module.exports = function(app, logger, passport, connection) {
   app.set('showStackError', true)
 
   if (properties.env === 'development') {
@@ -47,7 +47,7 @@ module.exports = function(app, logger, passport, db) {
     app.use(express.session({
       secret: properties.session.secret,
       store: new MongoStore({
-        db: db.connection.db,
+        db: connection.db,
         collection: 'sessions'
       })
     }))

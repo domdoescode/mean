@@ -2,7 +2,6 @@
  * Module dependencies.
  */
 var express = require('express')
-  , fs = require('fs')
   , passport = require('passport')
   , bunyan = require('bunyan')
 
@@ -14,53 +13,44 @@ var express = require('express')
   , auth = require('./lib/middleware/auth')
   , mongoose = require('mongoose')
 
-// Define paths
-  , modelsPath = __dirname + '/app/models'
-
 // Bootstrap db connection
-  , db = mongoose.connect(properties.db)
+  , connection = mongoose.createConnection(properties.db)
 
-// Bootstrap models
-  , walk = function (path) {
-    fs.readdirSync(path).forEach(function (file) {
-      var newPath = path + '/' + file
-        , stat = fs.statSync(newPath)
+// Once connected, set everything up
+connection.once('open', function connectionOpen() {
+  // Bootstrap models
+  var models =
+      [ 'user'
+      ]
 
-      if (stat.isFile()) {
-        if (/(.*)\.(js$)/.test(file)) {
-          require(newPath)(logger, db)
-        }
-      } else if (stat.isDirectory()) {
-        walk(newPath)
+  models.forEach(function (model) {
+    require(__dirname + '/app/models/' + model)(logger, connection)
+  })
+
+  var options =
+      { logger: logger
+      , properties: properties
       }
-    })
-  }
 
-walk(modelsPath)
+  // Bootstrap passport config
+  require('./lib/passport')(passport, connection, options)
 
-var options =
-    { logger: logger
-    , properties: properties
-    }
+  var app = express()
 
-// Bootstrap passport config
-require('./lib/passport')(passport, options)
+  // Express settings
+  require('./app')(app, logger, passport, connection)
 
-var app = express()
+  // Bootstrap routes
+  require(__dirname + '/app/controllers/auth')(app, options, passport)
+  require(__dirname + '/app/controllers/home')(app, options)
+  require(__dirname + '/app/controllers/user')(app, options)
 
-// Express settings
-require('./app')(app, logger, passport, db)
+  // Start the app by listening on <port>
+  app.listen(properties.port)
 
-// Bootstrap routes
-require(__dirname + '/app/controllers/auth')(app, options, passport)
-require(__dirname + '/app/controllers/home')(app, options)
-require(__dirname + '/app/controllers/user')(app, options)
+  logger.info('Express app started on port', properties.port)
+  logger.info('App is in', properties.environment, 'environment')
 
-// Start the app by listening on <port>
-app.listen(properties.port)
-
-logger.info('Express app started on port', properties.port)
-logger.info('App is in', properties.environment, 'environment')
-
-// Expose app
-exports = module.exports = app
+  // Expose app
+  exports = module.exports = app
+})
