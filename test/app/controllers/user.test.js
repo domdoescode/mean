@@ -14,9 +14,6 @@ describe('User controller', function () {
 
     connection = mongoose.createConnection('mongodb://' + host + '/test' + dbName)
 
-    mongoose.models = {}
-    mongoose.modelSchemas = {}
-
     connection.once('open', function callback () {
       require('../../../app/models/user')(logger, connection)
       var user = require('../../../app/controllers/user')(app, options)
