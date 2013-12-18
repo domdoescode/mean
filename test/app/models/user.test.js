@@ -9,10 +9,9 @@ var logger = require('../../logger')
 describe('User model', function () {
   before(function (done) {
     var dbName = Math.round(Math.random() * 1000000).toString(36)
-    connection = mongoose.createConnection('mongodb://localhost/test' + dbName)
+      , host = process.env.WERCKER_MONGODB_HOST || 'localhost'
 
-    mongoose.models = {}
-    mongoose.modelSchemas = {}
+    connection = mongoose.createConnection('mongodb://' + host + '/test' + dbName)
 
     connection.once('open', function callback () {
       require('../../../app/models/user')(logger, connection)
