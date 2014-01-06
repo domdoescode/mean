@@ -79,7 +79,7 @@ module.exports = function(app, logger, passport, connection) {
     })
 
     // Assume 404 since no middleware responded
-    app.use(function(req, res, next) {
+    app.use(function(req, res) {
       res.status(404).render('404', {
         url: req.originalUrl,
         error: 'Not found'
