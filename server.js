@@ -14,7 +14,7 @@ var express = require('express')
   , mongoose = require('mongoose')
 
 // Bootstrap db connection
-  , connection = mongoose.createConnection(properties.db)
+  , connection = mongoose.createConnection(properties.db, properties.dbOptions)
 
 // Once connected, set everything up
 connection.once('open', function connectionOpen() {
@@ -27,6 +27,7 @@ connection.once('open', function connectionOpen() {
   var options =
       { logger: logger
       , properties: properties
+      , connection: connection
       }
 
   // Bootstrap passport config

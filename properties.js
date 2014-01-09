@@ -7,6 +7,8 @@ var _ = require('lodash')
     , session:
       { secret: 'dayz-G0n3-b____ai' }
     , db: 'mongodb://localhost/day-by-day'
+    , dbOptions:
+      { native_parser: true }
     }
 
   , properties =
