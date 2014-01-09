@@ -1,12 +1,12 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose')
-  , User = mongoose.model('User')
-  , postParser = require('../../lib/middleware/post-parser')
+var postParser = require('../../lib/middleware/post-parser')
 
 module.exports = function (app, options) {
   var logger = options.logger
+    , connection = options.connection
+    , User = connection.model('User')
 
   logger.info('Setting up user routes')
 

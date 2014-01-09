@@ -2,7 +2,6 @@ var request = require('supertest')
   , express = require('express')
   , mongoose = require('mongoose')
   , logger = require('../../logger')
-  , options = { logger: logger }
   , connection
 
 var app = express()
@@ -14,9 +13,14 @@ describe('User controller', function () {
 
     connection = mongoose.createConnection('mongodb://' + host + '/test' + dbName)
 
+    var options =
+        { logger: logger
+        , connection: connection
+        }
+
     connection.once('open', function callback () {
       require('../../../app/models/user')(logger, connection)
-      var user = require('../../../app/controllers/user')(app, options)
+      require('../../../app/controllers/user')(app, options)
       done()
     })
   })
