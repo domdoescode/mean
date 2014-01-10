@@ -9,6 +9,11 @@ var _ = require('lodash')
     , db: 'mongodb://localhost/day-by-day'
     , dbOptions:
       { native_parser: true }
+    , facebook:
+      { clientID: '576070102479260'
+      , clientSecret: '0d27924fa2fb638677d46923916e4321'
+      , callbackURL: '/auth/facebook/callback'
+      }
     }
 
   , properties =

@@ -102,9 +102,15 @@ describe('Auth controller', function () {
         .expect(404, done)
     })
 
-    it.skip('should 200 if Facebook is defined in properties', function (done) {
+    it('should 302 if Facebook is defined in properties', function (done) {
 
-      options.properties = { facebook: true }
+      options.properties =
+        { facebook:
+          { clientID: '576070102479260'
+          , clientSecret: '0d27924fa2fb638677d46923916e4321'
+          , callbackURL: '/auth/facebook/callback'
+          }
+        }
 
       var app = express()
 
@@ -117,7 +123,7 @@ describe('Auth controller', function () {
 
       request(app)
         .get(url)
-        .expect(200, done)
+        .expect(302, done)
     })
   })
 
