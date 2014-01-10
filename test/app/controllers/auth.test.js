@@ -4,6 +4,7 @@ var request = require('supertest')
   , logger = require('../../logger')
   , passport = require('passport')
   , mongoose = require('mongoose')
+  , helpers = require('../../../lib/middleware/helpers')
   , userFixtures = require('../models/fixtures/user')
   , flash = require('connect-flash')
   , connection
@@ -32,6 +33,12 @@ describe('Auth controller', function () {
     })
   })
 
+//==============================================================================
+//  Native Auth
+//==============================================================================
+//------------------------------------------------------------------------------
+//  Native Auth - Login
+//------------------------------------------------------------------------------
   describe('Native auth - /auth/log-in', function () {
     var url = '/auth/log-in'
 
@@ -80,6 +87,31 @@ describe('Auth controller', function () {
         })
     })
   })
+//------------------------------------------------------------------------------
+//  Native Auth - Forgot
+//------------------------------------------------------------------------------
+  describe('Native auth - /auth/forgot', function () {
+    var url = '/auth/forgot'
+
+    it('should 200', function (done) {
+      options.properties = { }
+
+      var app = express()
+      setupApp(app)
+
+      // require('../../../lib/passport')(passport, connection, options)
+      require('../../../app/controllers/auth')(app, options, passport)
+
+      request(app)
+        .get(url)
+        .expect(200, done)
+    })
+  })
+
+
+//==============================================================================
+//  Facebook Auth
+//==============================================================================
 
   describe('Facebook auth - /auth/facebook', function () {
     var url = '/auth/facebook'
@@ -90,11 +122,6 @@ describe('Auth controller', function () {
 
       var app = express()
 
-      app.use(express.cookieParser())
-      app.use(express.session({ secret: 's3cr3t' }))
-      app.use(flash())
-
-      require('../../../lib/passport')(passport, connection, options)
       require('../../../app/controllers/auth')(app, options, passport)
 
       request(app)
@@ -126,6 +153,10 @@ describe('Auth controller', function () {
         .expect(302, done)
     })
   })
+
+//==============================================================================
+//  Twitter Auth
+//==============================================================================
 
   describe('Twitter auth - /auth/twitter', function () {
     var url = '/auth/twitter'
@@ -172,6 +203,10 @@ describe('Auth controller', function () {
     })
   })
 
+//==============================================================================
+//  Google Auth
+//==============================================================================
+
   describe('Google auth - /auth/google', function () {
     var url = '/auth/google'
 
@@ -203,6 +238,10 @@ describe('Auth controller', function () {
         .expect(200, done)
     })
   })
+
+//==============================================================================
+//  Github Auth
+//==============================================================================
 
   describe('Github auth - /auth/github', function () {
     var url = '/auth/github'
@@ -241,6 +280,7 @@ describe('Auth controller', function () {
     })
   })
 
+
   after(function (done) {
     connection.db.dropDatabase(function (error) {
       connection.close()
@@ -248,3 +288,10 @@ describe('Auth controller', function () {
     })
   })
 })
+
+function setupApp(app) {
+  app.set('showStackError', true)
+  app.set('views', __dirname + '/../../../app/views')
+  app.set('view engine', 'jade')
+  app.use(helpers)
+}

@@ -30,6 +30,9 @@ module.exports = function (app, options, passport) {
 
   logger.info('Setting up auth routes')
 
+//==============================================================================
+//  Native Auth
+//==============================================================================
   app.post('/auth/log-in', postParser(), passport.authenticate('local', {
     failureRedirect: '/log-in',
     failureFlash: 'Invalid email or password.'
@@ -42,6 +45,13 @@ module.exports = function (app, options, passport) {
     res.redirect('/')
   })
 
+  app.get('/auth/forgot', function (req, res) {
+    res.render('users/forgot')
+  })
+
+//==============================================================================
+//  Social Media Auth
+//==============================================================================
   if (properties.facebook) {
     var facebookAuthMiddleware = passport.authenticate('facebook', authenticateOptions.facebook)
 
