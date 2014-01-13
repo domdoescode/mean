@@ -92,19 +92,25 @@ describe('Auth controller', function () {
 //------------------------------------------------------------------------------
   describe('Native auth - /auth/forgot', function () {
     var url = '/auth/forgot'
+    describe('GET ', function () {
+      it('should 200', function (done) {
+        options.properties = { }
 
-    it('should 200', function (done) {
-      options.properties = { }
+        var app = express()
+        setupApp(app)
 
-      var app = express()
-      setupApp(app)
+        // require('../../../lib/passport')(passport, connection, options)
+        require('../../../app/controllers/auth')(app, options, passport)
 
-      // require('../../../lib/passport')(passport, connection, options)
-      require('../../../app/controllers/auth')(app, options, passport)
-
-      request(app)
-        .get(url)
-        .expect(200, done)
+        request(app)
+          .get(url)
+          .expect(200, done)
+      })
+    })
+    describe('POST ', function () {
+      // it('should 400 if db query errors')
+      it('should 404 if user not found')
+      it('should ')
     })
   })
 
