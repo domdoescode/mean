@@ -37,10 +37,12 @@ module.exports = function (app, options, passport) {
     failureRedirect: '/log-in',
     failureFlash: 'Invalid email or password.'
   }), function (req, res) {
+    
     res.redirect('/')
   })
 
   app.get('/auth/log-out', function (req, res) {
+    console.log('log out');
     req.logout()
     res.redirect('/')
   })

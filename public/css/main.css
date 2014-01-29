@@ -1,0 +1,84 @@
+/*
+Theme Name:   Fosters Wordpress Theme
+Description:  Fosters Wordpress Theme, built by Synth Media.
+Version:      0.1
+Author:       Synth Media
+Author URI:   http://synthmedia.co.uk
+*/
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  vertical-align: top;
+}
+a img {
+  border: 0px;
+}
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+}
+.no-margin-right {
+  margin-right: 0px !important;
+}
+.fluid-width-video-wrapper {
+  margin-bottom: 45px;
+  display: block;
+}
+img.alignleft {
+  float: left;
+  margin-right: 15px;
+}
+img.alignright {
+  float: right;
+  margin-left: 15px;
+}
+body {
+  color: #375756;
+  margin: 0;
+}
+.content-section {
+  max-width: 1000px;
+  width: 90%;
+  margin: 0 auto;
+  zoom: 1;
+  padding: 30px 0px;
+}
+.content-section:before,
+.content-section:after {
+  content: "";
+  display: table;
+}
+.content-section:after {
+  clear: both;
+}
+.input-clear {
+  outline: 0;
+  border: 0px;
+  background: transparent;
+}
+.list-no-style {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.form-err {
+  display: none;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.clear {
+  clear: both;
+}

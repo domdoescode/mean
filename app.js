@@ -40,6 +40,7 @@ module.exports = function(app, logger, passport, connection) {
   app.configure(function() {
     // cookieParser should be above session
     app.use(express.cookieParser())
+    app.use(express.bodyParser({ keepExtensions: true, uploadDir: __dirname + '/public/uploads' }))
 
     app.use(express.methodOverride())
 
@@ -62,6 +63,7 @@ module.exports = function(app, logger, passport, connection) {
 
     // routes should be at the last
     app.use(app.router)
+
 
     // Assume 'not found' in the error msgs is a 404. this is somewhat silly,
     // but valid, you can do whatever you like, set properties, use instanceof etc.

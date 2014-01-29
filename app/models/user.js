@@ -42,6 +42,10 @@ module.exports = function (logger, connection) {
       { type: String
       , default: null
       }
+    , role:
+      { type : Object
+        , default: { bitMask : 2, title : 'user'}
+      }
     , github: {}
     , twitter: {}
     , facebook: {}

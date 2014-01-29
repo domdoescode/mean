@@ -19,7 +19,7 @@ var express = require('express')
 // Once connected, set everything up
 connection.once('open', function connectionOpen() {
   // Bootstrap models
-; [ 'user'
+; [ 'user', 'view'
   ].forEach(function (model) {
     require(__dirname + '/app/models/' + model)(logger, connection)
   })
@@ -40,6 +40,7 @@ connection.once('open', function connectionOpen() {
 
   // Bootstrap routes
   require(__dirname + '/app/controllers/auth')(app, options, passport)
+  require(__dirname + '/app/controllers/view')(app, options)
   require(__dirname + '/app/controllers/home')(app, options)
   require(__dirname + '/app/controllers/user')(app, options)
 

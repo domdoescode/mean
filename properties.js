@@ -6,7 +6,7 @@ var _ = require('lodash')
     , root: __dirname
     , session:
       { secret: 'dayz-G0n3-b____ai' }
-    , db: 'mongodb://localhost/day-by-day'
+    , db: 'mongodb://localhost/beacons-cms'
     , dbOptions:
       { native_parser: true }
     }

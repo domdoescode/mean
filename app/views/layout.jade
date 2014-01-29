@@ -1,10 +1,45 @@
 !!! 5
-head
-  title Synth MEAN
 
-body
-  include includes/header
+html(ng-app="myApp")
 
-  block content
+  head
+    title Synth MEAN
+    link(rel="stylesheet", href='/css/main.css')
 
-  include includes/footer
+  body
+    include includes/header
+
+    block content
+
+    include includes/footer
+    //- Libs
+    script(src="/js/libs/jquery-1.8.2.min.js")
+    script(src='/js/libs/underscore.js')
+
+    //- AngularJS
+    script(src="/js/libs/angularjs/angular.min.js")
+    script(src="/js/libs/angularjs/angular-cookies.min.js")
+    script(src="/js/libs/angularjs/angular-route.min.js")
+    script(src="/js/libs/angularjs/angular-sanitize.min.js")
+    script(src="/js/libs/angularjs/angular-animate.min.js")
+    script(src="/js/libs/angularjs/angular-cookies.min.js")
+
+    //- AngularJS App
+    script(src="/js/app.js")
+    script(src="/js/routingConfig.js")
+
+    //- AngularJS Controllers
+    script(src="/js/controllers/controllers.js")
+    script(src="/js/controllers/auth-controller.js")
+    script(src="/js/controllers/admin-controller.js")
+    script(src="/js/controllers/nav-controller.js")
+    script(src="/js/controllers/view-controller.js")
+
+    //- AngularJS Filters
+    script(src="/js/filters.js")
+
+    //- AngularJS Services
+    script(src="/js/services.js")
+
+    //- AngularJS Directives
+    script(src="/js/directives/directives.js")
