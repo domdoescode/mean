@@ -33,18 +33,58 @@ module.exports = function (app, options, passport) {
 //==============================================================================
 //  Native Auth
 //==============================================================================
-  app.post('/auth/log-in', postParser(), passport.authenticate('local', {
-    failureRedirect: '/log-in',
-    failureFlash: 'Invalid email or password.'
-  }), function (req, res) {
-    
-    res.redirect('/')
+  app.post('/auth/log-in', postParser(), function(req, res, next) {
+
+    passport.authenticate('local', function(err, user) {
+      if(err)     { return next(err)}
+
+      if(!user)   { return res.json(400, 'There was an error with your E-Mail/Password combination.') }
+
+      req.logIn(user, function(err) {
+        if(err) {
+          return next(err)
+        }
+
+        req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 24;
+        res.json(200, { 'role': user.role, 'username': user.username , '_id': user._id })
+      });
+    })(req, res, next)
+
   })
 
+  // app.post('/auth/sign-up' , function(req, res, next) {
+
+  //     passport.authenticate('local', function(err, user) {
+  //       if(err)     { return next(err)}
+
+  //       if(!user)   {
+  //         user = new User({
+  //           name: profile.displayName,
+  //           username: profile.username,
+  //           provider: 'twitter',
+  //           twitter: profile._json
+  //         })
+  //         user.save(function (err) {
+  //           if (err) console.log(err)
+  //           return done(err, user)
+  //         })
+
+  //       }
+
+  //       req.logIn(user, function(err) {
+  //           if(err) {
+  //             return next(err)
+  //           }
+
+  //           req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 24;
+  //           res.json(200, { 'role': user.role, 'username': user.username , '_id': user._id })
+  //         })
+  //     })(req, res, next)
+  // })
+
   app.get('/auth/log-out', function (req, res) {
-    console.log('log out');
     req.logout()
-    res.redirect('/')
+    res.send(200);
   })
 
   app.get('/auth/forgot', function (req, res) {

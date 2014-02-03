@@ -2,7 +2,7 @@ var _ = require('lodash')
   , path = require('path')
 
   , baseProperties =
-    { port: 4101
+    { port: 4100
     , root: __dirname
     , session:
       { secret: 'dayz-G0n3-b____ai' }
@@ -13,7 +13,7 @@ var _ = require('lodash')
 
   , properties =
     { development:
-      { port: 4001 }
+      { port: 4100 }
     }
 
 

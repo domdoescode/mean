@@ -1,26 +1,38 @@
-function LoginCtrl($rootScope, $scope, $location, $window, Auth) {
+'use strict';
+
+
+
+
+
+function LoginCtrl($rootScope, $scope, $location, $window, Auth, $cookieStore) {
     $scope.rememberme = true;
+    $scope.error = ""
+
     $scope.login = function() {
+
       Auth.login({
-          username: $scope.username,
-          password: $scope.password,
-          rememberme: $scope.rememberme
+        email: $scope.email,
+        password: $scope.password,
+        rememberme: $scope.rememberme
       },
+
       function(res) {
-          // $cookieStore.put('user', res);
-          // console.log('res is ',res);
-          // if (Auth.adminUser ){
-          //   $location.path('/users');
-          // } else {
-            $location.path('/');
-          // }
+
+        $cookieStore.put('user', res);
+        $location.path('/');
+
       },
+
       function(err) {
-          $rootScope.error = "Failed to login";
+
+        $scope.error = "Failed to login";
+
       });
     };
     $scope.loginOauth = function(provider) {
-        $window.location.href = '/auth/' + provider;
+
+        $window.location.href = '/auth/' + provider
+
     };
 };
 
@@ -30,7 +42,6 @@ function RegisterCtrl($rootScope, $scope, $location, Auth) {
     $scope.userRoles = Auth.userRoles;
 
     $scope.signup = function() {
-      console.log('suign');
         Auth.register({
             email: $scope.email,
             name: $scope.fullname,
@@ -39,7 +50,7 @@ function RegisterCtrl($rootScope, $scope, $location, Auth) {
             role: $scope.role
         },
         function() {
-          console.log('reg ister');
+            $cookieStore.put('user', res);
             $location.path('/');
         },
         function(err) {

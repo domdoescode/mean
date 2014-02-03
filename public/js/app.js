@@ -26,30 +26,25 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 
         access:         access.anon
       })
 
-      .when('/views', {
-        templateUrl:    'templates/views.jade',
-        controller:     ViewCtrl,
-        access:         access.anon
-      })
-
-
       .otherwise({
         redirectTo: '/'
       });
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true)
   }])
 
 
 .run(['$rootScope', '$location', 'Auth', function ($rootScope, $location, Auth) {
 
-    $rootScope.$on("$routeChangeStart", function (event, next, current) {
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
       $rootScope.error = null;
-      console.log('next',next.access);
+
       if (!Auth.authorize(next.access)) {
+
         if(Auth.isLoggedIn())               $location.path('/');
         else if(next.access.bitMask === 4 ) $location.path('/');
         else                                $location.path('/sign-in');
       }
-    });
 
-}]);
+    })
+
+}])

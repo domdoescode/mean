@@ -24,6 +24,7 @@ module.exports = function (app, options) {
     })
   })
 
+
   //Setting up the users api
   app.post('/users', postParser(), function (req, res, next) {
     var user = new User(req.body)
@@ -31,14 +32,11 @@ module.exports = function (app, options) {
     user.provider = 'local'
     user.save(function (err) {
       if (err) {
-        return res.render('users/sign-up', {
-          errors: err,
-          user: user
-        })
+        res.json(400, 'There was an error with your E-Mail/Password combination.')
       }
       req.logIn(user, function (err) {
         if (err) return next(err)
-        return res.redirect('/')
+        res.json(200, { 'role': user.role, 'username': user.username , '_id': user._id })
       })
     })
   })

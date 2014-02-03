@@ -1,13 +1,12 @@
 function UsersCtrl($rootScope, $scope, $location, $window, Auth, Users) {
     Users.getAll(
       function(res) {
-          // console.log(res);
-          $scope.users = res.users
+        $scope.users = res.users
       },
       function(err) {
-          $rootScope.error = "Users not found";
-      });
-};
+        $rootScope.error = "Users not found"
+      })
+}
 
 
 function UserCtrl($routeParams, $rootScope, $scope, $location, $window, Auth, Users) {
@@ -20,9 +19,9 @@ function UserCtrl($routeParams, $rootScope, $scope, $location, $window, Auth, Us
             },
             function(err) {
                 $rootScope.error = "Feeds not found";
-            });
+            })
       },
       function(err) {
           $rootScope.error = "Users not found";
-      });
-};
+      })
+}
