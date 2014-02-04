@@ -19,7 +19,7 @@ angular.module('myApp.services', [])
       authorize: function(accessLevel, role) {
         if(role === undefined)
             role = currentUser.role;
-        console.log('accessloevel', accessLevel);
+        // console.log('accessloevel', accessLevel);
         return accessLevel.bitMask & role.bitMask;
       },
 
