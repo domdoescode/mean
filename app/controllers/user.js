@@ -6,6 +6,7 @@ var postParser = require('../../lib/middleware/post-parser')
 module.exports = function (app, options) {
   var logger = options.logger
     , connection = options.connection
+
     , User = connection.model('User')
 
   logger.info('Setting up user routes')
@@ -24,7 +25,7 @@ module.exports = function (app, options) {
     })
   })
 
-  //Setting up the users api
+  // Setting up the users api
   app.post('/users', postParser(), function (req, res, next) {
     var user = new User(req.body)
 
