@@ -136,6 +136,21 @@ module.exports = function (logger, connection) {
     encryptPassword: function (password) {
       if (!password) return ''
       return crypto.createHmac('sha1', this.salt).update(password).digest('hex')
+    },
+
+    /**
+     * Generate Random Token
+     *
+     */
+    generateRandomToken: function () {
+      var user = this
+        , chars = "_!abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        , token = new Date().getTime() + '_'
+      for ( var x = 0; x < 16; x++ ) {
+        var i = Math.floor( Math.random() * 62 )
+        token += chars.charAt( i )
+      }
+      return token
     }
   }
 

@@ -4,6 +4,7 @@ var request = require('supertest')
   , logger = require('../../logger')
   , passport = require('passport')
   , mongoose = require('mongoose')
+  , helpers = require('../../../lib/middleware/helpers')
   , userFixtures = require('../models/fixtures/user')
   , flash = require('connect-flash')
   , connection
@@ -32,6 +33,12 @@ describe('Auth controller', function () {
     })
   })
 
+//==============================================================================
+//  Native Auth
+//==============================================================================
+//------------------------------------------------------------------------------
+//  Native Auth - Login
+//------------------------------------------------------------------------------
   describe('Native auth - /auth/log-in', function () {
     var url = '/auth/log-in'
 
@@ -80,6 +87,37 @@ describe('Auth controller', function () {
         })
     })
   })
+//------------------------------------------------------------------------------
+//  Native Auth - Forgot
+//------------------------------------------------------------------------------
+  describe('Native auth - /auth/forgot', function () {
+    var url = '/auth/forgot'
+    describe('GET ', function () {
+      it('should 200', function (done) {
+        options.properties = { }
+
+        var app = express()
+        setupApp(app)
+
+        // require('../../../lib/passport')(passport, connection, options)
+        require('../../../app/controllers/auth')(app, options, passport)
+
+        request(app)
+          .get(url)
+          .expect(200, done)
+      })
+    })
+    describe('POST ', function () {
+      // it('should 400 if db query errors')
+      it('should 404 if user not found')
+      it('should ')
+    })
+  })
+
+
+//==============================================================================
+//  Facebook Auth
+//==============================================================================
 
   describe('Facebook auth - /auth/facebook', function () {
     var url = '/auth/facebook'
@@ -90,11 +128,6 @@ describe('Auth controller', function () {
 
       var app = express()
 
-      app.use(express.cookieParser())
-      app.use(express.session({ secret: 's3cr3t' }))
-      app.use(flash())
-
-      require('../../../lib/passport')(passport, connection, options)
       require('../../../app/controllers/auth')(app, options, passport)
 
       request(app)
@@ -102,9 +135,15 @@ describe('Auth controller', function () {
         .expect(404, done)
     })
 
-    it.skip('should 200 if Facebook is defined in properties', function (done) {
+    it('should 302 if Facebook is defined in properties', function (done) {
 
-      options.properties = { facebook: true }
+      options.properties =
+        { facebook:
+          { clientID: '576070102479260'
+          , clientSecret: '0d27924fa2fb638677d46923916e4321'
+          , callbackURL: '/auth/facebook/callback'
+          }
+        }
 
       var app = express()
 
@@ -117,9 +156,13 @@ describe('Auth controller', function () {
 
       request(app)
         .get(url)
-        .expect(200, done)
+        .expect(302, done)
     })
   })
+
+//==============================================================================
+//  Twitter Auth
+//==============================================================================
 
   describe('Twitter auth - /auth/twitter', function () {
     var url = '/auth/twitter'
@@ -166,6 +209,10 @@ describe('Auth controller', function () {
     })
   })
 
+//==============================================================================
+//  Google Auth
+//==============================================================================
+
   describe('Google auth - /auth/google', function () {
     var url = '/auth/google'
 
@@ -197,6 +244,10 @@ describe('Auth controller', function () {
         .expect(200, done)
     })
   })
+
+//==============================================================================
+//  Github Auth
+//==============================================================================
 
   describe('Github auth - /auth/github', function () {
     var url = '/auth/github'
@@ -235,6 +286,7 @@ describe('Auth controller', function () {
     })
   })
 
+
   after(function (done) {
     connection.db.dropDatabase(function (error) {
       connection.close()
@@ -242,3 +294,10 @@ describe('Auth controller', function () {
     })
   })
 })
+
+function setupApp(app) {
+  app.set('showStackError', true)
+  app.set('views', __dirname + '/../../../app/views')
+  app.set('view engine', 'jade')
+  app.use(helpers)
+}
